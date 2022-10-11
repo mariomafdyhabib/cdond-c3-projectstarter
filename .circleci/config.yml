@@ -52,7 +52,7 @@ jobs:
 
   build-backend:
     docker:
-      - image: circleci/alpine3.15
+      - image: circleci/alpine3.13
     steps:
       - checkout
       - restore_cache:

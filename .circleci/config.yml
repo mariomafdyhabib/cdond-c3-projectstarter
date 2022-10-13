@@ -220,13 +220,13 @@ jobs:
           command: |
             cd backend
             npm install package_name
-            # npm run build
-            # npm fund
-            # npm audit fix --audit-level=critical --force
-            # npm audit fix
-            # npm fund
-            # npm audit fix --audit-level=critical --force
-            # npm audit fix
+            npm run build
+            npm fund
+            npm audit fix --audit-level=critical --force
+            npm audit fix
+            npm fund
+            npm audit fix --audit-level=critical --force
+            npm audit fix
             npm run migrations > migrations_dump.txt
             # Your code here
             # exit 1

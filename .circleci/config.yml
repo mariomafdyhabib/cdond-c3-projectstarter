@@ -220,7 +220,7 @@ jobs:
           command: |
             cd backend
             npm install package_name             
-            npx npm-check-updates
+            # npx npm-check-updates
             npm install
             # npm run build
             # npm run migrations

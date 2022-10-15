@@ -201,7 +201,7 @@ jobs:
             # Your code here
             apk add --update ansible 
             yum -y install tar gzip
-            npm install
+            # npm install
             # exit 1
       
       - run:

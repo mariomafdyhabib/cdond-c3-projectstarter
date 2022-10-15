@@ -202,7 +202,7 @@ jobs:
             apk add --update ansible 
             # yum -y install tar gzip
             # npm install
-            # exit 1
+            #  exit 1
       
       - run:
           name: Configure server

@@ -266,6 +266,12 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            # apk add --update ansible
+            yum -y install tar gzip
+            # your code here
       - restore_cache:
           keys: [frontend-build]
       - run:
@@ -276,12 +282,7 @@ jobs:
             npm run build
       # - run:
       #     command: curl --insecure https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_${CIRCLE_WORKFLOW_ID:0:7}  1%
-      - run:
-          name: Install dependencies
-          command: |
-            # apk add --update ansible
-            yum -y install tar gzip
-            # your code here
+      
       # - run: yum -y install tar gzip
       - attach_workspace:
           at: ~/

@@ -191,13 +191,19 @@ jobs:
       # attach workspace
       - checkout
       - add_ssh_keys:
-          fingerprints: ["4f:29:ed:9b:a0:21:df:54:d5:56:c4:0b:ee:65:52:f3"] # You can get this ID in the section where you registered the SSH Key
+          fingerprints: ["e8:87:4c:ca:c7:0e:72:c6:b2:e1:d8:de:e5:74:1d:c8"] # You can get this ID in the section where you registered the SSH Key
+      - attach_workspace:
+          at: .circleci/ansible/inventory.txt
+      - run: cat .circleci/ansible/inventory.txt
       - run:
           name: Install dependencies
           command: |
             # Your code here
             apk add --update ansible 
+            yum -y install tar gzip
+            npm install
             # exit 1
+      
       - run:
           name: Configure server
           command: |
@@ -205,6 +211,7 @@ jobs:
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
             # exit 1
+      
       # Here's where you will add some code to rollback on failure      
 
   run-migrations:
@@ -249,7 +256,7 @@ jobs:
             #curl https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
             # exit 1
-      - destroy-environment
+      
      # Here's where you will add some code to rollback on failure      
 
   deploy-frontend:

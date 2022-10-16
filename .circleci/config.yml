@@ -270,10 +270,10 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apt update
-            apt-get install python3.7
-            apk add --update ansible
+            # apt update
+            yum -y install python3.7
             yum -y install tar gzip
+            apk add --update ansible           
             # your code here
       - restore_cache:
           keys: [frontend-build]

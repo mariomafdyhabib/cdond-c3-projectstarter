@@ -318,7 +318,7 @@ jobs:
           name: Get backend url
           command: |
             # your code here
-            export BACKEND_IP=$(aws ec2 describe-instances...............)
+            export BACKEND_IP=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
@@ -348,8 +348,8 @@ jobs:
           fingerprints: ["e8:87:4c:ca:c7:0e:72:c6:b2:e1:d8:de:e5:74:1d:c8"] # You can get this ID in the section where you registered the SSH Key
       - attach_workspace:
           at: ~/
-      - restore_cache:
-          keys: [backend-build]    
+      # - restore_cache:
+      #     keys: [backend-build]    
       # - run:
       #     name: Install dependencies
       #     command: |
@@ -365,7 +365,9 @@ jobs:
       - run:
           name: Deploy backend
           command: |
-            ls
+            export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            echo $TYPEORM_HOST >> .circleci/ansible/inventory.txt
+
             cd backend
             npm i
             npm run build

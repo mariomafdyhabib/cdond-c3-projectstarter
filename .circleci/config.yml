@@ -17,7 +17,7 @@ commands:
           when: on_fail
           command: |
             aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7}
-            aws s3 rm s3://udapeople-<<parameters.Workflow_ID>> --recursive
+            # aws s3 rm s3://udapeople-<<parameters.Workflow_ID>> --recursive
             aws cloudformation delete-stack --stack-name frontend-<< parameters.Workflow_ID >>
             # Your code here
             # exit 1
@@ -36,7 +36,8 @@ commands:
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
             curl --insecure https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_${CIRCLE_WORKFLOW_ID:0:7}  
-            SUCCESS = 1
+            SUCCESS = curl --insecure https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_${CIRCLE_WORKFLOW_ID:0:7}  
+            echo "$SUCCESS"
             if(( $SUCCESS==1 )); 
             then
                 cd ~/project/backend
@@ -277,20 +278,20 @@ jobs:
       # Checkout code from git
       - checkout
       # - run: pip install --user ansible
-      - run:
-          name: Install dependencies
-          command: |
-            # apt update
-            # yum install python-pip
-            # yum -y install tar gzip
-            # pip install ansible
-            # curl http://npmjs.org/install.sh | sh
-            # yum install -y python3-pip
-            # python3 -m pip install --user --upgrade pip # Do not run pip as sudo. Do this instead.
-            # python3 -m pip install ansible
-            # apk add --update ansible        
-            # yum install nodejs npm   
-            # your code here
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       # apt update
+      #       # yum install python-pip
+      #       # yum -y install tar gzip
+      #       # pip install ansible
+      #       # curl http://npmjs.org/install.sh | sh
+      #       # yum install -y python3-pip
+      #       # python3 -m pip install --user --upgrade pip # Do not run pip as sudo. Do this instead.
+      #       # python3 -m pip install ansible
+      #       # apk add --update ansible        
+      #       # yum install nodejs npm   
+      #       # your code here
       - restore_cache:
           keys: [frontend-build]
       # - run:
@@ -346,11 +347,11 @@ jobs:
           fingerprints: ["e8:87:4c:ca:c7:0e:72:c6:b2:e1:d8:de:e5:74:1d:c8"] # You can get this ID in the section where you registered the SSH Key
       - attach_workspace:
           at: ~/
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update ansible
-            #  your code here
+      # - run:
+      #     name: Install dependencies
+      #     command: |
+      #       apk add --update ansible
+      #       #  your code here
       - restore_cache:
           keys: [backend-build]
       - run:

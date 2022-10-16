@@ -361,7 +361,7 @@ jobs:
   deploy-backend:
     docker:
       # Docker image here that supports Ansible
-      - image: python:3.7-alpine3.11
+      - image: mareimorsy/aws-node
     steps:
       # Checkout code from git
       # Add ssh keys with fingerprint
@@ -372,16 +372,16 @@ jobs:
           at: .
       # - restore_cache:
       #     keys: [backend-build]    
-      - run:
-          name: Install dependencies
-          working_directory: /tmp
-          command: |
-            apk add --update ansible curl rsync openssh nodejs npm
-            ansible --version
-            pip install awscli
-            aws --version
-            # yum -y install tar gzip
-            #  your code here
+      # - run:
+      #     name: Install dependencies
+      #     working_directory: /tmp
+      #     command: |
+      #       apk add --update ansible curl rsync openssh nodejs npm
+      #       ansible --version
+      #       pip install awscli
+      #       aws --version
+      #       # yum -y install tar gzip
+      #       #  your code here
       # - run:
       #     name: Configure dependencies
       #     command: |
@@ -390,21 +390,22 @@ jobs:
       #       ansible-playbook -i inventory.txt deploy-frontend.yml
       
       - run:
-          name: Deploy backend
-          
+          name: Deploy backend          
           command: |
-            # export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
-            # echo $TYPEORM_HOST >> .circleci/ansible/inventory.txt
-            # cd backend
-            # npm i
-            # npm run build
-            # cd ..
+            export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            echo $TYPEORM_HOST >> .circleci/ansible/inventory.txt
+            cd backend
+            npm i
+            npm run build
+            cd ..
             # Zip the directory
-            # tar -C backend -czvf artifact.tar.gz .
-            cd .circleci/ansible
+            tar -C backend -czvf artifact.tar.gz .
+            cp artifact.tar.gz ~/project/.circleci/ansible/roles/deploy/artifact.tar.gz
+            ls ../.circleci/ansible/roles/deploy/
+            cd ../.circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml -vv
+            ansible-playbook -i inventory.txt deploy-backend.yml 
             # your code here
       - destroy-environment   
       - revert-migrations   

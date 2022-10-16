@@ -365,6 +365,7 @@ jobs:
             ansible --version
             pip install awscli
             aws --version
+            yum -y install tar gzip
             #  your code here
       # - run:
       #     name: Configure dependencies
@@ -375,17 +376,17 @@ jobs:
       
       - run:
           name: Deploy backend
-          working_directory: ./.circleci/ansible
+          
           command: |
-            export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
-            echo $TYPEORM_HOST >> .circleci/ansible/inventory.txt
+            # export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            # echo $TYPEORM_HOST >> .circleci/ansible/inventory.txt
 
             # npm i
             # npm run build
             # cd ..
             # Zip the directory
-            # tar -C backend -czvf artifact.tar.gz .
-            # cd .circleci/ansible
+            tar -C backend -czvf artifact.tar.gz .
+            cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml

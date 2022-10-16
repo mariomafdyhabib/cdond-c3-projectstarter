@@ -281,7 +281,13 @@ jobs:
             # your code here
       - restore_cache:
           keys: [frontend-build]
-      
+      - run:
+          name: Configure dependencies
+          command: |
+            # Your code here
+            cd .circleci/ansible
+            ansible-playbook -i inventory.txt configure-server.yml
+            # exit 1
       - run:
           name: front-end build
           command: |

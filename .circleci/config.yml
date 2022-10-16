@@ -271,10 +271,13 @@ jobs:
           name: Install dependencies
           command: |
             # apt update
-            yum -y install python3.7
+            # yum install python-pip
             yum -y install tar gzip
-            yum -y install apk
-            apk add --update ansible           
+            # pip install ansible
+            yum install -y python3-pip
+            python3 -m pip install --user --upgrade pip # Do not run pip as sudo. Do this instead.
+            python3 -m pip install ansible
+            # apk add --update ansible           
             # your code here
       - restore_cache:
           keys: [frontend-build]

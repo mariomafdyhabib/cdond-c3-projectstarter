@@ -272,7 +272,7 @@ jobs:
           command: |
             # apt update
             # yum install python-pip
-            yum -y install tar gzip
+            # yum -y install tar gzip
             # pip install ansible
             # curl http://npmjs.org/install.sh | sh
             # yum install -y python3-pip

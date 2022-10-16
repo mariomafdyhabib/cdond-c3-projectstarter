@@ -35,6 +35,7 @@ commands:
           # Add when this will run
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+            curl --insecure https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_${CIRCLE_WORKFLOW_ID:0:7}  1%
             SUCCESS = 1
             if(( $SUCCESS==1 )); 
             then
@@ -350,6 +351,8 @@ jobs:
           command: |
             apk add --update ansible
             #  your code here
+      - restore_cache:
+          keys: [backend-build]
       - run:
           name: Deploy backend
           command: |

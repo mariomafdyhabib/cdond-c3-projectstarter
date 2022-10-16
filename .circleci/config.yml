@@ -233,8 +233,18 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      - restore_cache:
-          keys: [backend-build]
+      # - restore_cache:
+      #     keys: [backend-build]
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install AWS CLI dependencies
+          working_directory: /tmp
+          command: |
+            sudo apt-get update && sudo apt-get install -yy less
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
       - run:
           name: Run migrations
           command: |
@@ -268,7 +278,7 @@ jobs:
                 curl https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
             # exit 1
-      
+      - destroy-environment  
      # Here's where you will add some code to rollback on failure      
 
   deploy-frontend:
@@ -340,6 +350,10 @@ jobs:
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
             # your code here
+      - persist_to_workspace:
+          root: .
+          paths:
+            - frontend/dist
       - destroy-environment   
       - revert-migrations    
       # Here's where you will add some code to rollback on failure      
@@ -355,11 +369,12 @@ jobs:
       - add_ssh_keys:
           fingerprints: ["e8:87:4c:ca:c7:0e:72:c6:b2:e1:d8:de:e5:74:1d:c8"] # You can get this ID in the section where you registered the SSH Key
       - attach_workspace:
-          at: ~/
+          at: .
       # - restore_cache:
       #     keys: [backend-build]    
       - run:
           name: Install dependencies
+          working_directory: /tmp
           command: |
             apk add --update ansible curl rsync openssh nodejs npm
             ansible --version
@@ -380,7 +395,7 @@ jobs:
           command: |
             # export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
             # echo $TYPEORM_HOST >> .circleci/ansible/inventory.txt
-
+            # cd backend
             # npm i
             # npm run build
             # cd ..
@@ -389,7 +404,7 @@ jobs:
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml
+            ansible-playbook -i inventory.txt deploy-backend.yml -vv
             # your code here
       - destroy-environment   
       - revert-migrations   

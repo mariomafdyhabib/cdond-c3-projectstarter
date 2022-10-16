@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   slack: circleci/slack@4.10.1
+  # aws-cli: circleci/aws-cli@2.0.3
 
 commands:
   destroy-environment:
@@ -36,11 +37,11 @@ commands:
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
             # curl --insecure https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_${CIRCLE_WORKFLOW_ID:0:7}  
-            $SUCCESS = $(curl --insecure https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_${CIRCLE_WORKFLOW_ID:0:7})  
+            SUCCESS=$(curl --insecure https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_${CIRCLE_WORKFLOW_ID:0:7})  
             echo "$SUCCESS"
             if(( $SUCCESS==1 )); 
             then
-                cd ~/cdond-c3-projectstarter/backend
+                cd ~/project/backend
                 npm install
               # Add revert code here. You can find this in the Getting Started section.
                 npm run migration:revert
@@ -347,20 +348,28 @@ jobs:
           fingerprints: ["e8:87:4c:ca:c7:0e:72:c6:b2:e1:d8:de:e5:74:1d:c8"] # You can get this ID in the section where you registered the SSH Key
       - attach_workspace:
           at: ~/
+      - restore_cache:
+          keys: [backend-build]    
       # - run:
       #     name: Install dependencies
       #     command: |
       #       apk add --update ansible
       #       #  your code here
-      - restore_cache:
-          keys: [backend-build]
+      # - run:
+      #     name: Configure dependencies
+      #     command: |
+      #       # Your code here
+      #       cd .circleci/ansible
+      #       ansible-playbook -i inventory.txt deploy-frontend.yml
+      
       - run:
           name: Deploy backend
           command: |
-            # cd backend
-            # npm i
-            # npm run build
-            # cd ..
+            ls
+            cd backend
+            npm i
+            npm run build
+            cd ..
             # Zip the directory
             tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible

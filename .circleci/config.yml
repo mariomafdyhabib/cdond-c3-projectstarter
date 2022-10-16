@@ -339,7 +339,7 @@ jobs:
   deploy-backend:
     docker:
       # Docker image here that supports Ansible
-      - image: mareimorsy/aws-node
+      - image: python:3.7-alpine3.11
     steps:
       # Checkout code from git
       # Add ssh keys with fingerprint
@@ -348,13 +348,13 @@ jobs:
           fingerprints: ["e8:87:4c:ca:c7:0e:72:c6:b2:e1:d8:de:e5:74:1d:c8"] # You can get this ID in the section where you registered the SSH Key
       - attach_workspace:
           at: ~/
-      # - restore_cache:
-      #     keys: [backend-build]    
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       apk add --update ansible
-      #       #  your code here
+      - restore_cache:
+          keys: [backend-build]    
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+            #  your code here
       # - run:
       #     name: Configure dependencies
       #     command: |
@@ -463,8 +463,8 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
+      - deploy-frontend:
+          requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
       # - smoke-test:

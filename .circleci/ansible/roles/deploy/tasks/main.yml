@@ -1,20 +1,20 @@
----
-- name: "upgrade packages."
-  become: true
-  apt:
-    upgrade: "yes"
+- name: Create Backend Directory
+  file:
+    path: /home/ubuntu/backend
+    state: directory
 
-- name: "install dependencies."
-  become: true
-  apt:
-    name: ["nodejs", "npm"]
-    state: latest
-    update_cache: yes
+- copy:
+    src: ~/project/.circleci/ansible/roles/deploy/artifact.tar.gz
+    dest: /home/ubuntu/backend
 
-- name: "install pm2"
-  become: true
-  npm:
-    name: pm2
-    global: yes
-    production: yes
-    state: present
+- name: Extract artifact.tar.gz to EC2 
+  unarchive:
+    src: artifact.tar.gz
+    dest: /home/ubuntu/backend
+
+- name: "Installing Node Dependencies"
+  shell: |
+    cd /home/ubuntu/backend
+    npm install
+    pm2 stop default
+    pm2 start npm -- start

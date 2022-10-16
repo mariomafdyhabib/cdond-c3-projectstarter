@@ -273,6 +273,7 @@ jobs:
             # apt update
             yum -y install python3.7
             yum -y install tar gzip
+            yum -y install apk
             apk add --update ansible           
             # your code here
       - restore_cache:

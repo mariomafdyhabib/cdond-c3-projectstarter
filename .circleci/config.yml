@@ -362,7 +362,7 @@ jobs:
   deploy-backend:
     docker:
 
-      - image: python:3.7-alpine3.11
+      - image: mareimorsy/aws-node
 
     steps:
 
@@ -373,16 +373,16 @@ jobs:
           at: ~/
       # - restore_cache:
       #     keys: [backend-build]    
-      - run:
-          name: Install dependencies
-          working_directory: /tmp
-          command: |
-            apk add --update ansible curl rsync openssh nodejs npm
-            ansible --version
-            pip install awscli
-            aws --version
-            # yum -y install tar gzip
-            #  your code here
+      # - run:
+      #     name: Install dependencies
+      #     working_directory: /tmp
+      #     command: |
+      #       apk add --update ansible curl rsync openssh nodejs npm
+      #       ansible --version
+      #       pip install awscli
+      #       aws --version
+      #       # yum -y install tar gzip
+      #       #  your code here
       # - run:
       #     name: Configure dependencies
       #     command: |
@@ -393,14 +393,14 @@ jobs:
       - run:
           name: Deploy backend          
           command: |
-            # export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
-            # echo $TYPEORM_HOST >> .circleci/ansible/inventory.txt
-            # cd backend
-            # npm i
-            # npm run build
-            # cd ..
+            export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            echo $TYPEORM_HOST >> .circleci/ansible/inventory.txt
+            cd backend
+            npm i
+            npm run build
+            cd ..
             # # Zip the directory
-            # tar -C backend -czvf artifact.tar.gz .
+            tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt

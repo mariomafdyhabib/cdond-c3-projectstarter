@@ -182,7 +182,7 @@ jobs:
           command: |
             aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --filters "Name=tag:Project,Values=udacity" \
+              --filters "Name=tag:Project,Values=backstruct" \
               --output text >> ./.circleci/ansible/inventory.txt  
             cat ./.circleci/ansible/inventory.txt  
             # Your code here

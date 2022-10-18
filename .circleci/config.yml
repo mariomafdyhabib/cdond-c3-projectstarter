@@ -180,12 +180,11 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            cd .circleci/ansible
-            BACKEND_IP=$(aws ec2 describe-instances \
+            aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:project,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --output text) >> ./.circleci/ansible/inventory.txt  
-            cat inventory.txt
+              --output text >> ./.circleci/ansible/inventory.txt  
+            cat ./.circleci/ansible/inventory.txt  
             # Your code here
             # exit 1
       - persist_to_workspace:

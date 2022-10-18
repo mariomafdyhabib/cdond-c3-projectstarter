@@ -39,6 +39,7 @@
 
   roles:
     - configure-server
+    - configure-prometheus-node-exporter
     # - deploy
     # Your code here
     

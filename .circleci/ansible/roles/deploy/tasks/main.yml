@@ -33,9 +33,9 @@
 #     pm2 start main.js
 #   register: execute_node
 
-- name: print message
-  debug:
-    msg: "{{ execute_node.stdout_lines }}"
+# - name: print message
+#   debug:
+#     msg: "{{ execute_node.stdout_lines }}"
 
 - name: "Configure pm2 to start as service"
   shell: |

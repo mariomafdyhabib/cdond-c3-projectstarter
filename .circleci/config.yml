@@ -5,6 +5,35 @@ orbs:
   # aws-cli: circleci/aws-cli@2.0.3
 
 commands:
+  install_awscli:
+    description: Install AWS ClI v2
+    steps:
+      - run:
+          name: Install AWS CLI v2
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+
+  install_ansible:
+    description: Install Ansible
+    steps:
+      - run:
+          name: Install Ansible
+          command: |
+            sudo apt update
+            sudo apt install software-properties-common -y
+            sudo add-apt-repository --yes --update ppa:ansible/ansible
+            sudo apt install ansible -y
+
+  install_nodejs:
+    description: Install nodejs 13
+    steps:
+      - run:
+          name: Install nodejs 13
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+            sudo apt install -y nodejs
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
@@ -421,11 +450,17 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - install_awscli
+      - run:
+          name: Install AWS CLI v2
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+
       - install_ansible
       - install_nodejs
       - add_ssh_keys:
-          fingerprints: ["9d:59:4a:d6:fb:ac:62:45:b3:d0:54:3c:1a:80:12:19"]
+          fingerprints: ["e8:87:4c:ca:c7:0e:72:c6:b2:e1:d8:de:e5:74:1d:c8"]
       - attach_workspace:
           at: ~/
       - restore_cache:

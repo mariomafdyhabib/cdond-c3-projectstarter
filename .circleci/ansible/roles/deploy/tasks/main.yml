@@ -15,7 +15,7 @@
     npm i
 - name: Start the app
   shell: |
-    cd /home/ubuntu/backend/dist
+    cd /home/ubuntu/backend-app/dist
     export TYPEORM_ENTITIES=./backend/dist/modules/domain/**/*.entity{.ts,.js}
     export TYPEORM_HOST=udapeople-prod.cfnvu6himdrq.us-east-1.rds.amazonaws.com
     export TYPEORM_PORT=5432

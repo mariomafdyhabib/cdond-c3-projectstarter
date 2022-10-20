@@ -510,31 +510,47 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      - run:
-          name: Get old stack workflow id
-          command: |
-            your code here
-            Fetch the Old workflow ID
-            export OldWorkflowID=$(aws cloudformation \
-                    list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-                    --no-paginate --output text) | cut -d '-'
-            echo OldWorkflowID: "${OldWorkflowID}"
-            echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
-            # Fetch the stack names          
-            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-                    --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
-            echo Stack names: "${STACKS[@]}"          
-            # OldWorkflowID=$(curl -H "token: 1513db3b-15be-4750-bae6-3a8d32dd6de2" --request GET https://api.memstash.io/values/WorkflowID)
-            # CurrentWorkflowID=${CIRCLE_WORKFLOW_ID:0:7}
+      # - run:
+      #     name: Get old stack workflow id
+      #     command: |
+      #       your code here
+      #       Fetch the Old workflow ID
+      #       export OldWorkflowID=$(aws cloudformation \
+      #               list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+      #               --no-paginate --output text) | cut -d '-'
+      #       echo OldWorkflowID: "${OldWorkflowID}"
+      #       echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
+      #       # Fetch the stack names          
+      #       export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+      #               --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
+      #       echo Stack names: "${STACKS[@]}"          
+      #       # OldWorkflowID=$(curl -H "token: 1513db3b-15be-4750-bae6-3a8d32dd6de2" --request GET https://api.memstash.io/values/WorkflowID)
+      #       # CurrentWorkflowID=${CIRCLE_WORKFLOW_ID:0:7}
+      # - run:
+      #     name: Remove old stacks and files
+      #     command: |
+      #       if [[ "${STACKS[@]}" != "$OldWorkflowID" ]]
+      #       then
+      #         aws s3 rm "s3://${OldWorkflowID}" --recursive
+      #         aws cloudformation delete-stack --stack-name "backend-${OldWorkflowID}"
+      #         aws cloudformation delete-stack --stack-name "frontend-${OldWorkflowID}"
+      #       fi
       - run:
           name: Remove old stacks and files
           command: |
-            if [[ "${STACKS[@]}" != "$OldWorkflowID" ]]
+            export STACKS=($(aws cloudformation list-stacks \
+                --query "StackSummaries[*].StackName" \
+                --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
+            echo Stack names: "${STACKS[@]}"
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/96VQ4uq8Uyu1QJ2enhW1bb/old_workflow_id)
+            echo Old Workflow ID: $OldWorkflowID 
+            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
-              aws s3 rm "s3://${OldWorkflowID}" --recursive
-              aws cloudformation delete-stack --stack-name "backend-${OldWorkflowID}"
-              aws cloudformation delete-stack --stack-name "frontend-${OldWorkflowID}"
+              aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
+              aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
+              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             fi
+
             
 
 workflows:
@@ -554,7 +570,7 @@ workflows:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           # filters:
           #   branches:
-          #     only: [test-feature-branch]
+          #     only: [master]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:

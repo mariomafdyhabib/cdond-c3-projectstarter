@@ -16,14 +16,14 @@
 - name: Start the app
   shell: |
     cd /home/ubuntu/backend-app/dist
-    export TYPEORM_ENTITIES=./backend/dist/modules/domain/**/*.entity{.ts,.js}
+    export TYPEORM_ENTITIES="./modules/domain/**/*.entity.js"
     export TYPEORM_HOST=udapeople-prod.cfnvu6himdrq.us-east-1.rds.amazonaws.com
     export TYPEORM_PORT=5432
     export TYPEORM_USERNAME=postgres
     export TYPEORM_PASSWORD=01278793940
     export TYPEORM_DATABASE=udapeople_prod
-    export TYPEORM_MIGRATIONS_DIR=./backend/dist/migrations
-    export TYPEORM_MIGRATIONS=./backend/dist/migrations/*.ts
+    export TYPEORM_MIGRATIONS_DIR=./migrations
+    export TYPEORM_MIGRATIONS=./migrations/*.js
     pm2 stop default
     pm2 start -f main.js
 # - name: "Executing Node app with PM2"

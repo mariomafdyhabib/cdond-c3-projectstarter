@@ -443,12 +443,12 @@ jobs:
             echo ${URL}       
             if curl -s --head ${URL} 
             then
-                return 0
+                return 1
             else
                 return 1
             fi
-      # - destroy-environment   
-      # - revert-migrations 
+      - destroy-environment   
+      - revert-migrations 
       # Here's  where you will add some code to rollback on failure  
 
   cloudfront-update:

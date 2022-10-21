@@ -482,7 +482,7 @@ jobs:
 
   # cleanup:
   #   docker:
-  #      # Docker image here
+  #       # Docker image here
   #     - image: amazon/aws-cli
   #   steps:
   #     # Checkout code from git
@@ -517,7 +517,7 @@ jobs:
                 --query "StackSummaries[*].StackName" \
                 --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
             echo Stack names: "${STACKS[@]}"
-            export OldWorkflowID=$(curl --insecure https://kvdb.io/M1XMUmuEdXFmFXcU9aQ68e/old_workflow_id)
+            # export OldWorkflowID=$(curl --insecure https://kvdb.io/M1XMUmuEdXFmFXcU9aQ68e/old_workflow_id)
             echo Old Workflow ID: $OldWorkflowID 
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then

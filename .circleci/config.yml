@@ -483,7 +483,7 @@ jobs:
       # Docker image here
       - image: amazon/aws-cli
     steps:
-      #  Checkout code from git
+      # Checkout code from git
       - checkout
       - run:
            name: Remove old stacks and files
